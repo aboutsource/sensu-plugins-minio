@@ -5,6 +5,8 @@ require_relative '../bin/check-minio-update.rb'
 
 describe CheckMinioUpdate do
   let(:status) { double }
+  local_version_return = "Version: 2019-09-05T23:24:38Z\nRelease-Tag: RELEASE.2019-09-05T23-24-38Z\nCommit-ID: b52a3e523cc3c4debc0ea2f86386377df5355c81"
+  latest_version_return = [body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-05T23-24-38Z', status: 200]
 
   before :context do
     CheckMinioUpdate.class_variable_set(:@@autorun, false)
@@ -24,9 +26,9 @@ describe CheckMinioUpdate do
   end
 
   it 'should bo ok if versions are equal' do
-    @api.to_return(body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-11T19-53-16Z', status: 200)
+    @api.to_return(latest_version_return)
     allow(status).to receive(:success?).and_return(true)
-    allow(Open3).to receive(:capture3).with('sh -c "minio"').and_return(['2019-09-11T19-53-16Z', nil, status])
+    allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
@@ -37,28 +39,43 @@ describe CheckMinioUpdate do
   end
 
   it 'should be critical if versions differ' do
-    @api.to_return(body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-11T19-53-16Z', status: 200)
+    latest_version_return_diff = [body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-11T19-53-16Z', status: 200]
+    @api.to_return(latest_version_return_diff)
     allow(status).to receive(:success?).and_return(true)
-    allow(Open3).to receive(:capture3).with('sh -c "minio"').and_return(['2019-09-05T19-53-16Z', nil, status])
+    allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
       expect(error.status).to eq 2
     end
-    expect(@check).to have_received(:output).with('New minio version available minio.RELEASE.2019-09-11T19-53-16Z')
+    expect(@check).to have_received(:output).with('New minio version available RELEASE.2019-09-11T19-53-16Z')
     expect(@api).to have_been_requested
   end
 
   it 'should be unknown if minio not found' do
-    @api.to_return(body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-11T19-53-16Z', status: 200)
+    @api.to_return(latest_version_return)
     allow(status).to receive(:success?).and_return(false)
-    allow(Open3).to receive(:capture3).with('sh -c "minio"').and_return([nil, 'Minio not found', status])
+    allow(Open3).to receive(:capture3).with('minio version').and_return([nil, 'Minio not found', status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
       expect(error.status).to eq 3
     end
-    expect(@check).to have_received(:output).with('Check failed: Minio not found')
+    expect(@check).to have_received(:output).with('Unable to gather local minio version: Minio not found')
+    expect(@api).to have_been_requested
+  end
+
+  it 'should be unknown if release url changes ' do
+    latest_version_return_404 = [body: '404 Not Found', status: 404]
+    @api.to_return(latest_version_return_404)
+    allow(status).to receive(:success?).and_return(false)
+    allow(Open3).to receive(:capture3).with('minio version').and_return([nil, 'Minio not found', status])
+
+    expect { @check.run }.to raise_error do |error|
+      expect(error).to be_a SystemExit
+      expect(error.status).to eq 3
+    end
+    expect(@check).to have_received(:output).with('Unable to gather latest minio version: 404 Not Found')
     expect(@api).to have_been_requested
   end
 end

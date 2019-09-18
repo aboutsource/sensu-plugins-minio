@@ -51,21 +51,41 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   end
 
   def check_update(checkurl, platform)
-    uri = URI.parse(format('%<checkurl>s/%<platform>s/minio.shasum',
-                           checkurl: checkurl, platform: platform))
-    latest_version = Net::HTTP.get(uri).split.last
+    uri = URI.parse(
+      format(
+        '%<checkurl>s/%<platform>s/minio.shasum',
+        checkurl: checkurl,
+        platform: platform
+      )
+    )
+    response = Net::HTTP.get_response(uri)
 
-    stdout_str, error_str, status = Open3.capture3('sh -c "minio"')
-    if status.success?
-      minio_version = stdout_str.split.last
+    if response.is_a?(Net::HTTPSuccess)
+      latest_version = response.body.split.last.split('.', 2).last.freeze
     else
-      unknown format('Check failed: %<error>s', error: error_str)
+      unknown format(
+        'Unable to gather latest minio version: %<response>s',
+        response: response.body
+      )
     end
 
-    if latest_version.split('.').last == minio_version.tr(':', '-')
+    stdout_str, error_str, status = Open3.capture3('minio version')
+    if status.success?
+      local_version = stdout_str.lines.at(1).split.last.freeze
+    else
+      unknown format(
+        'Unable to gather local minio version: %<error>s',
+        error: error_str
+      )
+    end
+
+    if latest_version == local_version
       ok 'No new minio version available'
     else
-      critical format('New minio version available %<version>s', version: latest_version)
+      critical format(
+        'New minio version available %<version>s',
+        version: latest_version
+      )
     end
   end
 end

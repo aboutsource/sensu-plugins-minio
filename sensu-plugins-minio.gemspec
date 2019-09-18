@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['info@aboutsource.net']
 
   spec.summary       = 'Check if there are updates for the local minio server instance'
-  spec.description   = 'Used to checko for manual installed minio servers'
+  spec.description   = 'Used to check for manual installed minio servers'
   spec.homepage      = 'https://github.com/aboutsource/sensu-plugins-minio'
   spec.require_paths = ['lib']
 
