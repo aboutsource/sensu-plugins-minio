@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'webmock/rspec'
 
@@ -25,7 +27,7 @@ describe CheckMinioUpdate do
     allow(@check).to receive(:output)
   end
 
-  it 'should bo ok if versions are equal' do
+  it 'should be ok if versions are equal' do
     @api.to_return(latest_version_return)
     allow(status).to receive(:success?).and_return(true)
     allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
@@ -66,10 +68,10 @@ describe CheckMinioUpdate do
   end
 
   it 'should be unknown if release url changes ' do
-    latest_version_return_404 = [body: '404 Not Found', status: 404]
-    @api.to_return(latest_version_return_404)
+    not_found = [body: '404 Not Found', status: 404]
+    @api.to_return(not_found)
     allow(status).to receive(:success?).and_return(false)
-    allow(Open3).to receive(:capture3).with('minio version').and_return([nil, 'Minio not found', status])
+    allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
