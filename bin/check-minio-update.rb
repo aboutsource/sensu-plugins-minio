@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 #
 # Check for minio updates
 #
@@ -51,41 +53,26 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   end
 
   def check_update(checkurl, platform)
-    uri = URI.parse(
-      format(
-        '%<checkurl>s/%<platform>s/minio.shasum',
-        checkurl: checkurl,
-        platform: platform
-      )
-    )
+    uri = URI.parse("#{checkurl}/#{platform}/minio.shasum")
     response = Net::HTTP.get_response(uri)
 
     if response.is_a?(Net::HTTPSuccess)
-      latest_version = response.body.split.last.split('.', 2).last.freeze
+      latest_version = response.body.split.last.split('.', 2).last
     else
-      unknown format(
-        'Unable to gather latest minio version: %<response>s',
-        response: response.body
-      )
+      unknown "Unable to gather latest minio version: #{response.body}"
     end
 
     stdout_str, error_str, status = Open3.capture3('minio version')
     if status.success?
-      local_version = stdout_str.lines.at(1).split.last.freeze
+      local_version = stdout_str.lines.at(1).split.last
     else
-      unknown format(
-        'Unable to gather local minio version: %<error>s',
-        error: error_str
-      )
+      unknown "Unable to gather local minio version: #{error_str}"
     end
 
     if latest_version == local_version
       ok 'No new minio version available'
     else
-      critical format(
-        'New minio version available %<version>s',
-        version: latest_version
-      )
+      critical "New minio version available #{latest_version}"
     end
   end
 end

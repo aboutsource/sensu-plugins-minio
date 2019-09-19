@@ -16,16 +16,15 @@ Or install it yourself as:
 
     $ gem install sensu-plugins-minio
 
-## CONFIGURATION
-
-TODO
-
 ## USAGE
 Check if a the local minio version is in the most recent version
 
 ### Optional parameters
 
-TODO
+Checks will check the default URL https://dl.min.io/server/minio/release 
+and the default Platform linux-amd64 for updates. Adjust these optional 
+parameters if you want to check a different platform or for whatever 
+reason need to check a differen URL.
 
 | Parameter          | Description                                     |
 | ------------------ | ----------------------------------------------- |
@@ -51,6 +50,8 @@ release a new version, update the version number in `version.rb`, and then run
 `bundle exec rake release`, which will create a git tag for the version, push
 git commits and tags, and push the `.gem` file to
 [rubygems.org](https://rubygems.org).
+
+Plugin follows the [rubocop ruby style guide](https://github.com/rubocop-hq/ruby-style-guide)
 
 ## Contributing
 
