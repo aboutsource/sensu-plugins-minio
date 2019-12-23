@@ -62,14 +62,14 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
       unknown "Unable to gather latest minio version: #{response.body}"
     end
 
-    stdout_str, error_str, status = Open3.capture3('minio version')
+    stdout_str, error_str, status = Open3.capture3('minio')
     if status.success?
-      local_version = stdout_str.lines.at(1).split.last
+      local_version = stdout_str.split.last
     else
       unknown "Unable to gather local minio version: #{error_str}"
     end
 
-    if latest_version == local_version
+    if latest_version.split('.').last == local_version.tr(':', '-')
       ok 'No new minio version available'
     else
       critical "New minio version available #{latest_version}"
