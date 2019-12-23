@@ -30,7 +30,7 @@ describe CheckMinioUpdate do
   it 'should be ok if versions are equal' do
     @api.to_return(latest_version_return)
     allow(status).to receive(:success?).and_return(true)
-    allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
+    allow(Open3).to receive(:capture3).with('minio').and_return([local_version_return, nil, status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
@@ -44,7 +44,7 @@ describe CheckMinioUpdate do
     latest_version_return_diff = [body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-11T19-53-16Z', status: 200]
     @api.to_return(latest_version_return_diff)
     allow(status).to receive(:success?).and_return(true)
-    allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
+    allow(Open3).to receive(:capture3).with('minio').and_return([local_version_return, nil, status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
@@ -57,7 +57,7 @@ describe CheckMinioUpdate do
   it 'should be unknown if minio not found' do
     @api.to_return(latest_version_return)
     allow(status).to receive(:success?).and_return(false)
-    allow(Open3).to receive(:capture3).with('minio version').and_return([nil, 'Minio not found', status])
+    allow(Open3).to receive(:capture3).with('minio').and_return([nil, 'Minio not found', status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
@@ -71,7 +71,7 @@ describe CheckMinioUpdate do
     not_found = [body: '404 Not Found', status: 404]
     @api.to_return(not_found)
     allow(status).to receive(:success?).and_return(false)
-    allow(Open3).to receive(:capture3).with('minio version').and_return([local_version_return, nil, status])
+    allow(Open3).to receive(:capture3).with('minio').and_return([local_version_return, nil, status])
 
     expect { @check.run }.to raise_error do |error|
       expect(error).to be_a SystemExit
