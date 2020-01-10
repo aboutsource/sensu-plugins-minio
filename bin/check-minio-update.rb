@@ -45,34 +45,38 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
 
     begin
       Timeout.timeout(timeout) do
-        check_update(checkurl, platform)
+        latest_version = get_latest_version(checkurl, platform)
+        local_version = get_local_version
+
+        if local_version == latest_version
+          ok 'No new minio version available'
+        else
+          critical "New minio version available #{latest_version}"
+        end
       end
+    rescue IOError => e
+      unknown "#{e.message}"
     rescue Timeout::Error
       unknown 'Connection timed out'
     end
   end
 
-  def check_update(checkurl, platform)
+  def get_latest_version(checkurl, platform)
     uri = URI.parse("#{checkurl}/#{platform}/minio.shasum")
     response = Net::HTTP.get_response(uri)
 
-    if response.is_a?(Net::HTTPSuccess)
-      latest_version = response.body.split.last.split('.', 2).last
-    else
-      unknown "Unable to gather latest minio version: #{response.body}"
+    unless response.is_a?(Net::HTTPSuccess)
+      raise IOError, "Unable to gather latest minio version: #{response.body}"
     end
 
-    stdout_str, error_str, status = Open3.capture3('minio')
-    if status.success?
-      local_version = stdout_str.split.last
-    else
-      unknown "Unable to gather local minio version: #{error_str}"
-    end
+    return response.body.split.last.split('.', 2).last
+  end
 
-    if latest_version.split('.').last == local_version.tr(':', '-')
-      ok 'No new minio version available'
-    else
-      critical "New minio version available #{latest_version}"
-    end
+  def get_local_version
+    stdout, stderr, status = Open3.capture3('minio --version', unsetenv_others: true)
+
+    raise IOError, "Unable to gather local minio version: #{stderr}" unless status.success?
+
+    return stdout.split.last
   end
 end
