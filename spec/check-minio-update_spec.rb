@@ -9,7 +9,8 @@ describe CheckMinioUpdate do
   before do
     stub_checksum_request
     allow(check).to(receive(:output))
-    allow(Open3).to(receive(:capture3).and_return([stdout, stderr, double(:success? => success)]))
+    allow(Open3).to(receive(:capture3).with(array_including('minio --version'))
+                                      .and_return([stdout, stderr, double(:success? => success)]))
   end
 
   let(:checksum_request) do
