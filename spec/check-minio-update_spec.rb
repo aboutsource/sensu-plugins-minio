@@ -7,8 +7,8 @@ require_relative '../bin/check-minio-update.rb'
 
 describe CheckMinioUpdate do
   let(:status) { double }
-  local_version_return = "Version: 2019-09-05T23:24:38Z\nRelease-Tag: RELEASE.2019-09-05T23-24-38Z\nCommit-ID: b52a3e523cc3c4debc0ea2f86386377df5355c81"
-  latest_version_return = [body: '65a735f04bc1d35b4f86418226d5bbb4895cf7e1 minio.RELEASE.2019-09-05T23-24-38Z', status: 200]
+  local_version_return = "minio version RELEASE.2021-07-08T19-43-25Z"
+  latest_version_return = [body: '285ec90006a6961ebcb7dd9685acc0ebcd08f561 minio.RELEASE.2021-07-12T02-44-53Z', status: 200]
 
   before :context do
     CheckMinioUpdate.class_variable_set(:@@autorun, false)
