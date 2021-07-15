@@ -73,7 +73,7 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   end
 
   def get_local_version
-    stdout, stderr, status = Open3.capture3('minio --version', unsetenv_others: true)
+    stdout, stderr, status = Open3.capture3([{'PATH' => ENV['PATH']}, 'minio --version', :unsetenv_others => true])
 
     raise IOError, "Unable to gather local minio version: #{stderr}" unless status.success?
 
