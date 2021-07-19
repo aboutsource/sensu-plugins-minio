@@ -80,7 +80,7 @@ describe CheckMinioUpdate do
     end
   end
 
-  context 'with release url not found' do ||
+  context 'with release url not found' do
     let(:response) { { body: '404 Not Found', status: 404 } }
 
     it 'should be unknown' do
