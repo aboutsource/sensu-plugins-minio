@@ -9,8 +9,7 @@ describe CheckMinioUpdate do
   before do
     stub_checksum_request
     allow(check).to(receive(:output))
-    allow(Open3).to(receive(:capture3).with(array_including('minio --version'))
-                                      .and_return([stdout, stderr, double(:success? => success)]))
+    allow(Open3).to(receive(:capture3).and_return([stdout, stderr, double(:success? => success)]))
   end
 
   let(:checksum_request) do
@@ -81,7 +80,7 @@ describe CheckMinioUpdate do
     end
   end
 
-  context 'with release url not found' do ||
+  context 'with release url not found' do
     let(:response) { { body: '404 Not Found', status: 404 } }
 
     it 'should be unknown' do
