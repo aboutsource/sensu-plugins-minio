@@ -57,3 +57,7 @@ Plugin follows the [rubocop ruby style guide](https://github.com/rubocop-hq/ruby
 
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/aboutsource/sensu-plugins-minio.
+
+## Security
+
+* [Snyk](https://app.snyk.io/org/about-source/project/0a24cb05-4369-457c-8cca-7e4c395eb25e)
