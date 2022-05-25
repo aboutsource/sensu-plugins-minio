@@ -9,7 +9,9 @@ describe CheckMinioUpdate do
   before do
     stub_checksum_request
     allow(check).to(receive(:output))
-    allow(Open3).to(receive(:capture3).and_return([stdout, stderr, double(:success? => success)]))
+    allow(Open3).to(
+      receive(:capture3).and_return([stdout, stderr, double(success?: success)])
+    )
   end
 
   let(:checksum_request) do
@@ -20,7 +22,12 @@ describe CheckMinioUpdate do
   end
 
   let(:response) do
-    { body: '285ec90006a6961ebcb7dd9685acc0ebcd08f561 minio.RELEASE.2021-07-08T19-43-25Z', status: 200 }
+    {
+      body:
+        '285ec90006a6961ebcb7dd9685acc0ebcd08f561 '\
+        'minio.RELEASE.2021-07-08T19-43-25Z',
+      status: 200
+    }
   end
 
   alias_method :stub_checksum_request, :checksum_request
@@ -43,14 +50,21 @@ describe CheckMinioUpdate do
         expect(error.status).to eq 0
       end
 
-      expect(check).to have_received(:output).with('No new minio version available')
+      expect(check).to have_received(:output).with(
+        'No new minio version available'
+      )
       expect(checksum_request).to have_been_requested
     end
   end
 
   context 'with different local and remote versions' do
     let(:response) do
-      { body: '285ec90006a6961ebcb7dd9685acc0ebcd08f561 minio.RELEASE.2022-07-08T19-43-25Z', status: 200 }
+      {
+        body:
+          '285ec90006a6961ebcb7dd9685acc0ebcd08f561 '\
+          'minio.RELEASE.2022-07-08T19-43-25Z',
+        status: 200
+      }
     end
 
     it 'should be critical' do
@@ -59,7 +73,9 @@ describe CheckMinioUpdate do
         expect(error.status).to eq 2
       end
 
-      expect(check).to have_received(:output).with('New minio version available RELEASE.2022-07-08T19-43-25Z')
+      expect(check).to have_received(:output).with(
+        'New minio version available RELEASE.2022-07-08T19-43-25Z'
+      )
       expect(checksum_request).to have_been_requested
     end
   end
@@ -75,7 +91,9 @@ describe CheckMinioUpdate do
         expect(error.status).to eq 3
       end
 
-      expect(check).to have_received(:output).with('Unable to gather local minio version: Minio not found')
+      expect(check).to have_received(:output).with(
+        'Unable to gather local minio version: Minio not found'
+      )
       expect(checksum_request).to have_been_requested
     end
   end
@@ -89,7 +107,9 @@ describe CheckMinioUpdate do
         expect(error.status).to eq 3
       end
 
-      expect(check).to have_received(:output).with('Unable to gather latest minio version: 404 Not Found')
+      expect(check).to have_received(:output).with(
+        'Unable to gather latest minio version: 404 Not Found'
+      )
       expect(checksum_request).to have_been_requested
     end
   end

@@ -1,5 +1,8 @@
 # Sensu check for minio updates
 
+Translates the presence of an outdated minio server instance into sensu check
+results to reduce the time-to-patch for minio systems.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -24,7 +27,7 @@ Check if a the local minio version is in the most recent version
 Checks will check the default URL https://dl.min.io/server/minio/release 
 and the default Platform linux-amd64 for updates. Adjust these optional 
 parameters if you want to check a different platform or for whatever 
-reason need to check a differen URL.
+reason need to check a different URL.
 
 | Parameter          | Description                                     |
 | ------------------ | ----------------------------------------------- |
