@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sensu-plugins-minio (0.0.5)
+    sensu-plugins-minio (0.0.6)
       sensu-plugin (~> 2.1)
 
 GEM
