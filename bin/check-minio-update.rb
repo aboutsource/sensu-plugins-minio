@@ -82,6 +82,6 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
       raise IOError, "Unable to gather local minio version: #{stderr}"
     end
 
-    stdout.split.last
+    stdout.lines.first.split.last
   end
 end
