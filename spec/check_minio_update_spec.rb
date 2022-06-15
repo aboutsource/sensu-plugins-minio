@@ -39,7 +39,11 @@ describe CheckMinioUpdate do
     end
   end
 
-  let(:stdout) { 'minio version RELEASE.2021-07-08T19-43-25Z' }
+  let(:stdout) do
+    "minio version RELEASE.2021-07-08T19-43-25Z\n"\
+    "commit: dd53b287f2eeed9cd3872eeae7d64696bfd7829d\n"\
+    'go version: go1.18.3'
+  end
   let(:stderr) { nil }
   let(:success) { true }
 
