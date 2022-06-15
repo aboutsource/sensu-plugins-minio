@@ -44,6 +44,7 @@ describe CheckMinioUpdate do
     "commit: dd53b287f2eeed9cd3872eeae7d64696bfd7829d\n"\
     'go version: go1.18.3'
   end
+
   let(:stderr) { nil }
   let(:success) { true }
 
