@@ -67,7 +67,7 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   private
 
   def extract_release(release_source_str)
-    RELEASE_PATTERN.match(release_source_str)['release']
+    RELEASE_PATTERN.match(release_source_str)[:release]
   end
 
   def get_latest_version(checkurl, platform)
