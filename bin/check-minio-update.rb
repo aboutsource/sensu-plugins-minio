@@ -21,6 +21,8 @@ require 'open3'
 class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   include Sensu::Plugin::Utils
 
+  RELEASE_PATTERN = /(?<release>RELEASE.2\d{3}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)/
+
   option :checkurl,
          description: 'Base URL to check for updates',
          short: '-u URL',
@@ -39,14 +41,8 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
          default: 30
 
   def run
-    checkurl = config[:checkurl]
-    platform = config[:platform]
-    timeout = config[:timeout].to_i
-
     begin
-      Timeout.timeout(timeout) do
-        latest_version = get_latest_version(checkurl, platform)
-
+      Timeout.timeout(config[:timeout].to_i) do
         if local_version == latest_version
           ok 'No new minio version available'
         else
@@ -60,7 +56,19 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
     end
   end
 
+  def latest_version
+    @latest_version  ||= get_latest_version(config[:checkurl], config[:platform])
+  end
+
+  def local_version
+    @local_version  ||= get_local_version
+  end
+
   private
+
+  def extract_release(release_source_str)
+    RELEASE_PATTERN.match(release_source_str)['release']
+  end
 
   def get_latest_version(checkurl, platform)
     uri = URI.parse("#{checkurl}/#{platform}/minio.shasum")
@@ -70,10 +78,10 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
       raise IOError, "Unable to gather latest minio version: #{response.body}"
     end
 
-    response.body.split.last.split('.', 2).last
+    extract_release(response.body)
   end
 
-  def local_version
+  def get_local_version
     stdout, stderr, status = Open3.capture3(
       { 'PATH' => ENV['PATH'] }, 'minio --version', unsetenv_others: true
     )
@@ -82,6 +90,6 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
       raise IOError, "Unable to gather local minio version: #{stderr}"
     end
 
-    stdout.lines.first.split.last
+    extract_release(stdout)
   end
 end
