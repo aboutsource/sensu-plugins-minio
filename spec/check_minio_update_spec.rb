@@ -25,7 +25,7 @@ describe CheckMinioUpdate do
     {
       body:
         '285ec90006a6961ebcb7dd9685acc0ebcd08f561 '\
-        'minio.RELEASE.2021-07-08T19-43-25Z',
+        'RELEASE.2022-07-15T03-44-22Z',
       status: 200
     }
   end
@@ -40,9 +40,7 @@ describe CheckMinioUpdate do
   end
 
   let(:stdout) do
-    "minio version RELEASE.2021-07-08T19-43-25Z\n"\
-    "commit: dd53b287f2eeed9cd3872eeae7d64696bfd7829d\n"\
-    'go version: go1.18.3'
+    'minio version RELEASE.2022-07-15T03-44-22Z (commit-id=1b339ea062b423f1c6fbeb02116d020d18418917)'
   end
 
   let(:stderr) { nil }
@@ -67,7 +65,7 @@ describe CheckMinioUpdate do
       {
         body:
           '285ec90006a6961ebcb7dd9685acc0ebcd08f561 '\
-          'minio.RELEASE.2022-07-08T19-43-25Z',
+          'minio.RELEASE.2099-07-08T19-43-25Z',
         status: 200
       }
     end
@@ -79,7 +77,7 @@ describe CheckMinioUpdate do
       end
 
       expect(check).to have_received(:output).with(
-        'New minio version available RELEASE.2022-07-08T19-43-25Z'
+        'New minio version available RELEASE.2099-07-08T19-43-25Z'
       )
       expect(checksum_request).to have_been_requested
     end
@@ -99,7 +97,7 @@ describe CheckMinioUpdate do
       expect(check).to have_received(:output).with(
         'Unable to gather local minio version: Minio not found'
       )
-      expect(checksum_request).to have_been_requested
+      expect(checksum_request).not_to have_been_requested
     end
   end
 
