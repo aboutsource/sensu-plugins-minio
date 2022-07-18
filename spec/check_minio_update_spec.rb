@@ -23,9 +23,7 @@ describe CheckMinioUpdate do
 
   let(:response) do
     {
-      body:
-        '285ec90006a6961ebcb7dd9685acc0ebcd08f561 '\
-        'RELEASE.2022-07-15T03-44-22Z',
+      body: '3832278ee2bb74d41b617788b4244e410b29e4a8 minio.RELEASE.2022-07-17T15-43-14Z', # rubocop:disable Layout/LineLength
       status: 200
     }
   end
@@ -40,7 +38,7 @@ describe CheckMinioUpdate do
   end
 
   let(:stdout) do
-    'minio version RELEASE.2022-07-15T03-44-22Z (commit-id=1b339ea062b423f1c6fbeb02116d020d18418917)' # rubocop:disable Layout/LineLength
+    'minio version RELEASE.2022-07-17T15-43-14Z (commit-id=1b339ea062b423f1c6fbeb02116d020d18418917)' # rubocop:disable Layout/LineLength
   end
 
   let(:stderr) { nil }
