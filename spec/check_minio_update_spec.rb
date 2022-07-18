@@ -45,7 +45,7 @@ describe CheckMinioUpdate do
   let(:success) { true }
 
   context 'with matching local and remote version' do
-    it 'should be ok if versions are equal' do
+    it 'should be ok' do
       expect { check.run }.to raise_error do |error|
         expect(error).to be_a SystemExit
         expect(error.status).to eq 0
