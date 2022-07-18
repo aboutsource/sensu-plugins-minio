@@ -40,7 +40,7 @@ describe CheckMinioUpdate do
   end
 
   let(:stdout) do
-    'minio version RELEASE.2022-07-15T03-44-22Z (commit-id=1b339ea062b423f1c6fbeb02116d020d18418917)'
+    'minio version RELEASE.2022-07-15T03-44-22Z (commit-id=1b339ea062b423f1c6fbeb02116d020d18418917)' # rubocop:disable Layout/LineLength
   end
 
   let(:stderr) { nil }

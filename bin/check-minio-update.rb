@@ -21,7 +21,7 @@ require 'open3'
 class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   include Sensu::Plugin::Utils
 
-  RELEASE_PATTERN = /(?<release>RELEASE.2\d{3}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)/
+  RELEASE_PATTERN = /(?<release>RELEASE.2\d{3}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)/.freeze # rubocop:disable Layout/LineLength
 
   option :checkurl,
          description: 'Base URL to check for updates',
@@ -41,55 +41,49 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
          default: 30
 
   def run
-    begin
-      Timeout.timeout(config[:timeout].to_i) do
-        if local_version == latest_version
-          ok 'No new minio version available'
-        else
-          critical "New minio version available #{latest_version}"
-        end
+    Timeout.timeout(config[:timeout].to_i) do
+      if local_version == latest_version
+        ok 'No new minio version available'
+      else
+        critical "New minio version available #{latest_version}"
       end
-    rescue IOError => e
-      unknown e.message.to_s
-    rescue Timeout::Error
-      unknown 'Connection timed out'
     end
-  end
-
-  def latest_version
-    @latest_version  ||= get_latest_version(config[:checkurl], config[:platform])
-  end
-
-  def local_version
-    @local_version  ||= get_local_version
+  rescue IOError => e
+    unknown e.message.to_s
+  rescue Timeout::Error
+    unknown 'Connection timed out'
   end
 
   private
 
+  def latest_version
+    @latest_version ||= begin
+      uri = URI.parse("#{config[:checkurl]}/#{config[:platform]}/minio.shasum")
+      response = Net::HTTP.get_response(uri)
+
+      unless response.is_a?(Net::HTTPSuccess)
+        raise IOError, "Unable to gather latest minio version: #{response.body}"
+      end
+
+      extract_release(response.body)
+    end
+  end
+
+  def local_version
+    @local_version ||= begin
+      stdout, stderr, status = Open3.capture3(
+        { 'PATH' => ENV['PATH'] }, 'minio --version', unsetenv_others: true
+      )
+
+      unless status.success?
+        raise IOError, "Unable to gather local minio version: #{stderr}"
+      end
+
+      extract_release(stdout)
+    end
+  end
+
   def extract_release(release_source_str)
     RELEASE_PATTERN.match(release_source_str)[:release]
-  end
-
-  def get_latest_version(checkurl, platform)
-    uri = URI.parse("#{checkurl}/#{platform}/minio.shasum")
-    response = Net::HTTP.get_response(uri)
-
-    unless response.is_a?(Net::HTTPSuccess)
-      raise IOError, "Unable to gather latest minio version: #{response.body}"
-    end
-
-    extract_release(response.body)
-  end
-
-  def get_local_version
-    stdout, stderr, status = Open3.capture3(
-      { 'PATH' => ENV['PATH'] }, 'minio --version', unsetenv_others: true
-    )
-
-    unless status.success?
-      raise IOError, "Unable to gather local minio version: #{stderr}"
-    end
-
-    extract_release(stdout)
   end
 end
