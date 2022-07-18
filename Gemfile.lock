@@ -17,7 +17,7 @@ GEM
     jaro_winkler (1.5.4)
     json (2.6.2)
     mixlib-cli (1.7.0)
-    parallel (1.22.1)
+    parallel (1.19.2)
     parser (3.1.2.0)
       ast (~> 2.4.1)
     public_suffix (4.0.7)
@@ -60,6 +60,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 2.1)
+  parallel (< 1.20.0)
   rake (~> 13.0)
   rspec (~> 3.10)
   rubocop (~> 0.54, <= 0.81)
