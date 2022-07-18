@@ -21,7 +21,7 @@ require 'open3'
 class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   include Sensu::Plugin::Utils
 
-  RELEASE_PATTERN = /(?<release>RELEASE.2\d{3}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)/.freeze # rubocop:disable Layout/LineLength
+  RELEASE_PATTERN = /(?<release>RELEASE.\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z)/.freeze # rubocop:disable Layout/LineLength
 
   option :checkurl,
          description: 'Base URL to check for updates',
