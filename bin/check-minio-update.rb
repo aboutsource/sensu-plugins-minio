@@ -84,6 +84,12 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   end
 
   def extract_release(release_source_str)
-    RELEASE_PATTERN.match(release_source_str)[:release]
+    match_data = RELEASE_PATTERN.match(release_source_str)
+
+    if match_data.nil?
+      raise IOError, "Unable to extract release: #{release_source_str}"
+    end
+
+    match_data[:release]
   end
 end
