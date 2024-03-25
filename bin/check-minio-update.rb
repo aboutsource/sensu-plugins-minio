@@ -72,7 +72,7 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
   def local_version
     @local_version ||= begin
       stdout, stderr, status = Open3.capture3(
-        { 'PATH' => ENV['PATH'] }, 'journalctl --boot --unit minio | grep "Version: RELEASE" | tail -n 1', unsetenv_others: true
+        { 'PATH' => ENV['PATH'] }, 'journalctl --boot --unit minio | grep "Version: RELEASE" | tail -n 1', unsetenv_others: true # rubocop:disable Layout/LineLength
       )
 
       unless status.success?
