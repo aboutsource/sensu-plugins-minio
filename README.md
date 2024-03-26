@@ -44,7 +44,7 @@ reason need to check a different URL.
 
 Install rbenv and ruby-build to get a ruby 2.7.x on your system (running on ubuntu 20.04).
 
-    yay rbenv ruby-build
+    yay -S rbenv ruby-build
 
 Add the rbenv shell extension (`eval "$(rbenv init -)"`) to your shell config (e.g. `~/.zshrc`) and install ruby 2.7.0
 
