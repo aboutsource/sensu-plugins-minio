@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'sensu-plugins-minio'
   spec.version       = Sensu::Plugins::Minio::VERSION
   spec.licenses      = ['MIT']
-  spec.authors       = ['Hauke Altmann', 'Jonathan Schlue']
+  spec.authors       = ['Hauke Altmann', 'Jonathan Schlue', 'Benjamin Meichsner']
   spec.email         = ['info@aboutsource.net']
 
   spec.summary       = 'Check if there are updates for the local '\
