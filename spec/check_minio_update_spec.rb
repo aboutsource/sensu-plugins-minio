@@ -38,7 +38,7 @@ describe CheckMinioUpdate do
   end
 
   let(:stdout) do
-    'minio version RELEASE.2022-07-17T15-43-14Z (commit-id=1b339ea062b423f1c6fbeb02116d020d18418917)' # rubocop:disable Layout/LineLength
+    'Mar 25 07:37:03 weact-staging-db-07 minio[220013]: Version: RELEASE.2022-07-17T15-43-14Z (go1.21.8 linux/amd64)' # rubocop:disable Layout/LineLength
   end
 
   let(:stderr) { nil }

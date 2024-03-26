@@ -24,9 +24,9 @@ Check if a the local minio version is in the most recent version
 
 ### Optional parameters
 
-Checks will check the default URL https://dl.min.io/server/minio/release 
-and the default Platform linux-amd64 for updates. Adjust these optional 
-parameters if you want to check a different platform or for whatever 
+Checks will check the default URL https://dl.min.io/server/minio/release
+and the default Platform linux-amd64 for updates. Adjust these optional
+parameters if you want to check a different platform or for whatever
 reason need to check a different URL.
 
 | Parameter          | Description                                     |
@@ -42,7 +42,20 @@ reason need to check a different URL.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. You can
+Install rbenv and ruby-build to get a ruby 2.7.x on your system (running on ubuntu 20.04).
+
+    yay -S rbenv ruby-build
+
+Add the rbenv shell extension (`eval "$(rbenv init -)"`) to your shell config (e.g. `~/.zshrc`) and install ruby 2.7.0
+
+    rbenv install 2.7.0
+
+After checking out the repo verify, that your system is using the 2.7.0 ruby:
+
+    # rbenv version
+    2.7.0 (set by ..../sensu-plugins-minio/.ruby-version)
+
+Run `bin/setup` to install dependencies. You can
 also run `bin/console` for an interactive prompt that will allow you to
 experiment.
 
