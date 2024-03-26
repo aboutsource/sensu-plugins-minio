@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sensu-plugins-minio (1.0.0)
+    sensu-plugins-minio (1.1.0)
       sensu-plugin (~> 2.1)
 
 GEM
@@ -15,7 +15,7 @@ GEM
     diff-lcs (1.5.0)
     hashdiff (1.0.1)
     jaro_winkler (1.5.4)
-    json (2.6.2)
+    json (2.7.1)
     mixlib-cli (1.7.0)
     parallel (1.19.2)
     parser (3.1.2.0)
