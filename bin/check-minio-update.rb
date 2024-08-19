@@ -58,7 +58,7 @@ class CheckMinioUpdate < Sensu::Plugin::Check::CLI
 
   def latest_version
     @latest_version ||= begin
-      uri = URI.parse("#{config[:checkurl]}/#{config[:platform]}/minio.shasum")
+      uri = URI.parse("#{config[:checkurl]}/#{config[:platform]}/minio.sha256sum")
       response = Net::HTTP.get_response(uri)
 
       unless response.is_a?(Net::HTTPSuccess)
