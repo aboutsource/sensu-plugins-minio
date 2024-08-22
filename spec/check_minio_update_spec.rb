@@ -17,7 +17,7 @@ describe CheckMinioUpdate do
   let(:checksum_request) do
     stub_request(
       :get,
-      'https://dl.min.io/server/minio/release/linux-amd64/minio.shasum'
+      'https://dl.min.io/server/minio/release/linux-amd64/minio.sha256sum'
     ).to_return(response)
   end
 
